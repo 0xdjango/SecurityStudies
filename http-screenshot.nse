@@ -22,11 +22,27 @@ action = function(host, port)
 	local service_prefix = port.service
 
 	-- Screenshots will be called screenshot-namp-<IP>:<port>.png
+	
+	if host.targetname then 
+		local filename = "screenshot-nmap-" .. service_prefix .. host.targetname .. ":" .. port.number .. ".png"
+		local cmd1 = "timeout 10 wkhtmltoimage  --quality 50 -n " .. service_prefix .. "://" .. host.targetname .. ":" .. port.number .. " " .. filename .. " 2>/dev/null >/dev/null"		
+		local ret = os.execute(cmd)
+		local result = "failed (verify wkhtmltoimage is in your path)"
 
+		if ret then
+			result = "Saved to " .. filename
+		end
+
+	end
+	
+	
+	
         local filename = "screenshot-nmap-" .. service_prefix .. host.ip .. ":" .. port.number .. ".png"
 
 	-- Execute the shell command timeout 10 wkhtmltoimage <url> <filename>
-	local cmd = "timeout 10 wkhtmltoimage --height 768 -n " .. service_prefix .. "://" .. host.ip .. ":" .. port.number .. " " .. filename .. " 2>/dev/null >/dev/null"
+	local cmd = "timeout 10 wkhtmltoimage  --quality 50 -n " .. service_prefix .. "://" .. host.ip .. ":" .. port.number .. " " .. filename .. " 2>/dev/null >/dev/null"
+	
+	
 	
 	local ret = os.execute(cmd)
 
